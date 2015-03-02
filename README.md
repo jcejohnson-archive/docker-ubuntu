@@ -12,6 +12,6 @@ docker build -t jcejohnson/ubuntu .
 
 ## Running the container
 ```
-docker run -i -t jcejohnson/ubuntu .
+docker run -i -t --name ubuntu jcejohnson/ubuntu
 ```
 
