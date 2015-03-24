@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# jcejohnson
+#
+# Modified from https://docs.docker.com/reference/builder/
+#
+# read was misbehaving with /bin/sh and my base is ubuntu so I'm using /bin/bash
+# I also had issues getting read to behave by itself so I introduced the named pipe
+# as a control mechanism. In this version, anything you send will cause it to exit
+# but we may do more interesting things in the future.
+
+# 'docker stop' will stop a running container by sending SIGTERM and then SIGKILL
+# after a grace period.
+
+# By trapping SIGTERM
+# USE the trap if you need to also do manual cleanup after the service is stopped,
+#     or need to start multiple services in the one container
+trap "_stop_services ; exit 0" HUP INT QUIT KILL TERM
+
+args="$@"
+
+function _start_services {
+  echo "Starting services"
+  for i in /usr/local/lib/container-controller/start/*
+  do
+    echo "...$i"
+    [ -x "$i" ] && $i "$@"
+  done
+}
+
+function _stop_services {
+  echo "Stopping services"
+  for i in /usr/local/lib/container-controller/stop/*
+  do
+    echo "...$i"
+    [ -x "$i" ] && $i $args
+  done
+}
+
+_start_services "$@"
+
+echo "[hit enter key to exit] or run 'docker stop <container>'"
+read
+
+# Nothing else here will be executed. The signal terminates the app.
+
+echo "How did I get here?"
+
+_stop_services "$@"
+
+echo "exited $0"
+
+:

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+mkdir -pv /usr/local/lib/container-controller/{start,stop}
+
+:
