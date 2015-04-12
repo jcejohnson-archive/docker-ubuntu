@@ -2,7 +2,6 @@
 
 # Sample script for launching the ubuntu container
 
-rm -f /var/run/ubuntu-control
-mknod /var/run/ubuntu-control p
+docker kill ubuntu
 docker rm ubuntu
-docker run -d -p 80:80 -v /var/run/ubuntu-control:/var/run/container-control --name ubuntu tragus/ubuntu
+docker run -d -t -p 80:80 -v /var/run/ubuntu-control:/var/run/container-control --name ubuntu tragus/ubuntu
