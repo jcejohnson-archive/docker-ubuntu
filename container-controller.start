@@ -5,16 +5,14 @@
 # Modified from https://docs.docker.com/reference/builder/
 #
 # read was misbehaving with /bin/sh and my base is ubuntu so I'm using /bin/bash
-# I also had issues getting read to behave by itself so I introduced the named pipe
-# as a control mechanism. In this version, anything you send will cause it to exit
-# but we may do more interesting things in the future.
 
 # 'docker stop' will stop a running container by sending SIGTERM and then SIGKILL
 # after a grace period.
 
-# By trapping SIGTERM
-# USE the trap if you need to also do manual cleanup after the service is stopped,
-#     or need to start multiple services in the one container
+# When the script receives SIGTERM the read is interrupted and the script exits.
+# That doesn't let us do any cleanup. By trapping SIGTERM we can invoke the
+# _stop_services function. Traps are supposed to be quick so you shouldn't do too
+# much in your stop hooks.
 trap "_stop_services ; exit 0" HUP INT QUIT KILL TERM
 
 args="$@"
@@ -43,6 +41,7 @@ echo "[hit enter key to exit] or run 'docker stop <container>'"
 read
 
 # Nothing else here will be executed. The signal terminates the app.
+# The clean shutdown is handled by trapping SIGTERM above.
 
 echo "How did I get here?"
 
