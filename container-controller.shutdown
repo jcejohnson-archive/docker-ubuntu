@@ -1,8 +1,0 @@
-#!/bin/bash
-
-echo stop > /var/run/ubuntu-control
-sleep 5 # Wait for it...
-docker logs ubuntu
-docker rm ubuntu
-
-:
