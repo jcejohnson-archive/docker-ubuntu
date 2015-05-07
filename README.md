@@ -26,4 +26,3 @@ docker exec -it ubuntu /bin/bash
 ## TODO
 
 Describe how container-controller works and the service support mechanism
-
